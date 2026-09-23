@@ -16,15 +16,13 @@ import org.minestorm.essentials.commands.VanishCommand;
  * Vanish listener.
  *
  * Responsibilities:
- *  - On join: if the player was in the 5-second "hiding" window, hide them
- *    from everyone again so the countdown can finish.
- *  - On join: if a player joins while another is vanished, nothing special
- *    is needed because vanish is now cosmetic (action bar only) — but we
- *    still leave the hook so future behaviour can be added.
- *  - On quit: nothing to do, state is kept in memory.
- *  - On mob target: cancel targeting of players in the "hiding" window
- *    (the 5 seconds after unvanish), so mobs don't attack them while
- *    they're temporarily invisible.
+ *  - On join: hide already-vanished players from the newcomer
+ *             (unless the newcomer has minestorm.vanish.see).
+ *  - On join: if the newcomer is themselves vanished, hide them
+ *             from everyone who cannot see vanished players.
+ *  - On join: if the newcomer was in the 5s hide window when they
+ *             disconnected, re-apply the hide.
+ *  - On mob target: cancel targeting during the 5s hide window.
  */
 public class VanishListener implements Listener {
 
@@ -41,18 +39,35 @@ public class VanishListener implements Listener {
     public void onJoin(PlayerJoinEvent event) {
         Player joined = event.getPlayer();
 
-        // If this player was in the 5-second hiding window when they
-        // disconnected, re-apply the hide so the countdown can finish.
+        // 1) Hide all currently-vanished players from the newcomer,
+        //    unless the newcomer has the see permission.
+        if (!joined.hasPermission("minestorm.vanish.see")) {
+            for (Player online : Bukkit.getOnlinePlayers()) {
+                if (online.equals(joined)) continue;
+                if (VanishCommand.isVanished(online)) {
+                    joined.hidePlayer(online);
+                }
+            }
+        }
+
+        // 2) If the newcomer is themselves vanished, hide them from
+        //    everyone who cannot see vanished players.
+        if (VanishCommand.isVanished(joined)) {
+            for (Player online : Bukkit.getOnlinePlayers()) {
+                if (online.equals(joined)) continue;
+                if (online.hasPermission("minestorm.vanish.see")) continue;
+                online.hidePlayer(joined);
+            }
+        }
+
+        // 3) If the newcomer was in the 5-second hide window when they
+        //    disconnected, re-apply the hide.
         if (VanishCommand.isHiding(joined)) {
             for (Player online : Bukkit.getOnlinePlayers()) {
                 if (online.equals(joined)) continue;
                 online.hidePlayer(joined);
             }
         }
-
-        // Vanished players remain visible now (cosmetic vanish only).
-        // If you later want to re-hide vanished players on join,
-        // add that logic here.
     }
 
     // ============================================================
@@ -60,15 +75,13 @@ public class VanishListener implements Listener {
     // ============================================================
     @EventHandler
     public void onQuit(PlayerQuitEvent event) {
-        // Vanish state is kept in memory so it survives a reconnect.
-        // Remove the line below if you want vanish to reset on logout.
+        // State is kept in memory across reconnects.
+        // Uncomment the line below if you want vanish to reset on logout:
         // VanishCommand.getVanished().remove(event.getPlayer().getUniqueId());
     }
 
     // ============================================================
     //  MOB TARGETING
-    //  While a player is in the 5-second "hiding" window after
-    //  unvanishing, stop mobs from targeting them.
     // ============================================================
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onMobTarget(EntityTargetLivingEntityEvent event) {
@@ -82,9 +95,7 @@ public class VanishListener implements Listener {
 
         Player player = (Player) target;
 
-        // Only cancel targeting while the player is in the hide window
-        // (i.e. right after unvanishing).
-        if (VanishCommand.isHiding(player)) {
+        if (VanishCommand.isVanished(player) || VanishCommand.isHiding(player)) {
             event.setCancelled(true);
             event.setTarget(null);
         }
