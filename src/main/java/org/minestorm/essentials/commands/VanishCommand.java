@@ -6,28 +6,30 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
-import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.minestorm.essentials.util.MessageUtil;
 
 /**
  * /vanish [player]
- * Toggles vanish mode. Vanished players are hidden from players
- * without the minestorm.vanish.see permission.
+ *
+ * Vanish ON  -> player stays visible, action bar shows "VANISHED MODE"
+ * Vanish OFF -> player is hidden for 5 seconds, then re-shown,
+ *               action bar shows "NORMAL MODE" for those 5 seconds.
  */
 public class VanishCommand implements CommandExecutor, TabCompleter {
 
-    public static final String META_VANISHED = "minestorm.vanished";
+    private static final Set<UUID> vanished = new HashSet<UUID>();
+    private static final Set<UUID> hiding = new HashSet<UUID>();
 
     private final JavaPlugin plugin;
     private final MessageUtil messages;
-
-    private static final Set<UUID> vanished = new HashSet<UUID>();
 
     public VanishCommand(JavaPlugin plugin, MessageUtil messages) {
         this.plugin = plugin;
@@ -71,7 +73,12 @@ public class VanishCommand implements CommandExecutor, TabCompleter {
         }
 
         boolean newState = !vanished.contains(target.getUniqueId());
-        setVanished(this.plugin, target, newState);
+
+        if (newState) {
+            enableVanish(this.plugin, target);
+        } else {
+            disableVanishWithDelay(this.plugin, target);
+        }
 
         String state = newState ? "enabled" : "disabled";
 
@@ -88,36 +95,114 @@ public class VanishCommand implements CommandExecutor, TabCompleter {
         return true;
     }
 
-    /**
-     * Apply or remove vanish state for a player.
-     * Uses metadata instead of setSilent() (which doesn't exist in 1.8.8).
-     */
-    public static void setVanished(JavaPlugin plugin, Player player, boolean state) {
-        if (state) {
-            vanished.add(player.getUniqueId());
+    // ============================================================
+    //  ENABLE VANISH
+    // ============================================================
+    private void enableVanish(JavaPlugin plugin, Player player) {
+        vanished.add(player.getUniqueId());
+        hiding.remove(player.getUniqueId());
 
-            player.setMetadata(META_VANISHED,
-                    new FixedMetadataValue(plugin, Boolean.TRUE));
+        // Make sure they're visible
+        for (Player online : Bukkit.getOnlinePlayers()) {
+            if (online.equals(player)) continue;
+            online.showPlayer(player);
+        }
 
-            for (Player online : Bukkit.getOnlinePlayers()) {
-                if (online.equals(player)) continue;
-                if (online.hasPermission("minestorm.vanish.see")) continue;
-                online.hidePlayer(player);
+        // Big action bar
+        showActionBar(player, "&fYou are currently &c&lVANISHED MODE");
+
+        // Keep re-sending it (action bar fades after ~2 sec)
+        startActionBarLoop(plugin, player);
+    }
+
+    // ============================================================
+    //  DISABLE VANISH (hide for 5s, then re-show)
+    // ============================================================
+    private void disableVanishWithDelay(JavaPlugin plugin, Player player) {
+        vanished.remove(player.getUniqueId());
+        hiding.add(player.getUniqueId());
+
+        // Hide from everyone for 5 seconds
+        for (Player online : Bukkit.getOnlinePlayers()) {
+            if (online.equals(player)) continue;
+            online.hidePlayer(player);
+        }
+
+        // Show NORMAL MODE action bar for 5 seconds
+        final int[] ticks = {0};
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                if (!player.isOnline()) {
+                    cancel();
+                    return;
+                }
+                showActionBar(player, "&fYou are currently &a&lNORMAL MODE");
+                ticks[0] += 10;
+                if (ticks[0] >= 100) { // 100 ticks = 5 seconds
+                    // Re-show the player to everyone
+                    hiding.remove(player.getUniqueId());
+                    for (Player online : Bukkit.getOnlinePlayers()) {
+                        if (online.equals(player)) continue;
+                        online.showPlayer(player);
+                    }
+                    cancel();
+                }
             }
-        } else {
-            vanished.remove(player.getUniqueId());
+        }.runTaskTimer(plugin, 0L, 10L);
+    }
 
-            player.removeMetadata(META_VANISHED, plugin);
-
-            for (Player online : Bukkit.getOnlinePlayers()) {
-                if (online.equals(player)) continue;
-                online.showPlayer(player);
-            }
+    // ============================================================
+    //  ACTION BAR
+    // ============================================================
+    private void showActionBar(Player player, String message) {
+        String colored = ChatColor.translateAlternateColorCodes('&', message);
+        try {
+            // 1.8 method — sendPacket via NMS
+            Object packet = Class.forName("net.minecraft.server.v1_8_R3.PacketPlayOutChat")
+                    .getConstructor(Class.forName("net.minecraft.server.v1_8_R3.IChatBaseComponent"),
+                            byte.class)
+                    .newInstance(
+                            Class.forName("net.minecraft.server.v1_8_R3.ChatComponentText")
+                                    .getConstructor(String.class)
+                                    .newInstance(colored),
+                            (byte) 2);
+            Object handle = player.getClass().getMethod("getHandle").invoke(player);
+            Object playerConnection = handle.getClass().getField("playerConnection").get(handle);
+            playerConnection.getClass()
+                    .getMethod("sendPacket", Class.forName("net.minecraft.server.v1_8_R3.Packet"))
+                    .invoke(playerConnection, packet);
+        } catch (Exception e) {
+            // Fallback: send as normal chat message if NMS fails
+            player.sendMessage(colored);
         }
     }
 
+    // ============================================================
+    //  ACTION BAR LOOP (while vanished)
+    // ============================================================
+    private void startActionBarLoop(JavaPlugin plugin, final Player player) {
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                if (!player.isOnline() || !vanished.contains(player.getUniqueId())) {
+                    cancel();
+                    return;
+                }
+                showActionBar(player, "&fYou are currently &c&lVANISHED MODE");
+            }
+        }.runTaskTimer(plugin, 0L, 20L); // refresh every second
+    }
+
+    // ============================================================
+    //  STATE QUERIES
+    // ============================================================
     public static boolean isVanished(Player player) {
         return vanished.contains(player.getUniqueId());
+    }
+
+    public static boolean isHiding(Player player) {
+        return hiding.contains(player.getUniqueId());
     }
 
     public static Set<UUID> getVanished() {
