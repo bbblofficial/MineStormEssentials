@@ -11,6 +11,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
+import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.minestorm.essentials.util.MessageUtil;
 
@@ -21,10 +22,11 @@ import org.minestorm.essentials.util.MessageUtil;
  */
 public class VanishCommand implements CommandExecutor, TabCompleter {
 
+    public static final String META_VANISHED = "minestorm.vanished";
+
     private final JavaPlugin plugin;
     private final MessageUtil messages;
 
-    // Set of vanished player UUIDs
     private static final Set<UUID> vanished = new HashSet<UUID>();
 
     public VanishCommand(JavaPlugin plugin, MessageUtil messages) {
@@ -35,7 +37,6 @@ public class VanishCommand implements CommandExecutor, TabCompleter {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
-        // Check if vanish is enabled in config
         if (!messages.setting("vanish.enabled", true)) {
             messages.sendRaw(sender, "&cVanish is disabled in the config.");
             return true;
@@ -70,7 +71,7 @@ public class VanishCommand implements CommandExecutor, TabCompleter {
         }
 
         boolean newState = !vanished.contains(target.getUniqueId());
-        setVanished(target, newState);
+        setVanished(this.plugin, target, newState);
 
         String state = newState ? "enabled" : "disabled";
 
@@ -89,26 +90,32 @@ public class VanishCommand implements CommandExecutor, TabCompleter {
 
     /**
      * Apply or remove vanish state for a player.
+     * Uses metadata instead of setSilent() (which doesn't exist in 1.8.8).
      */
-    public static void setVanished(Player player, boolean state) {
+    public static void setVanished(JavaPlugin plugin, Player player, boolean state) {
         if (state) {
             vanished.add(player.getUniqueId());
+
+            // Set metadata so other listeners can detect vanish state
+            player.setMetadata(META_VANISHED,
+                    new FixedMetadataValue(plugin, Boolean.TRUE));
+
             // Hide from players who can't see vanished players
             for (Player online : Bukkit.getOnlinePlayers()) {
                 if (online.equals(player)) continue;
                 if (online.hasPermission("minestorm.vanish.see")) continue;
                 online.hidePlayer(player);
             }
-            // Prevent mob targeting
-            player.setSilent(true);
         } else {
             vanished.remove(player.getUniqueId());
+
+            player.removeMetadata(META_VANISHED, plugin);
+
             // Show to everyone
             for (Player online : Bukkit.getOnlinePlayers()) {
                 if (online.equals(player)) continue;
                 online.showPlayer(player);
             }
-            player.setSilent(false);
         }
     }
 
