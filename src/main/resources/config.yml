@@ -1,0 +1,84 @@
+# ==========================================================
+#  MineStorm Essentials - Configuration
+#  Version: 1.0
+# ==========================================================
+#  This file is AUTO-MERGED on plugin update.
+#  New keys are added automatically.
+#  Your existing values are NEVER overwritten.
+# ==========================================================
+
+# ----------------------------------------------------------
+#  Message Formats
+#  Placeholders:
+#    %sender%   - who sent the message
+#    %receiver% - who receives the message
+#    %message%  - message content
+#    %player%   - target player name
+#    %mode%     - gamemode name
+#    %state%    - enabled/disabled
+#    %speed%    - fly speed value
+#    %by%       - staff member name
+#    %usage%    - command usage string
+# ----------------------------------------------------------
+messages:
+  # -------- MSG --------
+  msg-sender: '&7[&6me &7-> &6%receiver%&7] &f%message%'
+  msg-receiver: '&7[&6%sender% &7-> &6me&7] &f%message%'
+  social-spy: '&8[&cSPY&8] &7[&6%sender% &7-> &6%receiver%&7] &f%message%'
+  msg-no-reply: '&cYou have nobody to reply to.'
+  msg-self: '&cYou cannot message yourself.'
+
+  # -------- GENERIC --------
+  no-permission: '&cYou do not have permission to do this.'
+  player-not-found: '&cPlayer not found: &e%player%'
+  player-only: '&cOnly players can use this command.'
+  invalid-args: '&cUsage: &e%usage%'
+
+  # -------- GAMEMODE --------
+  gamemode-changed-self: '&aYour gamemode has been set to &e%mode%&a.'
+  gamemode-changed-other: '&aSet gamemode of &e%player% &ato &e%mode%&a.'
+  gamemode-notify: '&eYour gamemode was set to &6%mode% &eby &6%by%&e.'
+
+  # -------- FLY --------
+  fly-enabled-self: '&aFlight &lENABLED&a.'
+  fly-disabled-self: '&cFlight &lDISABLED&c.'
+  fly-enabled-other: '&aEnabled flight for &e%player%&a.'
+  fly-disabled-other: '&cDisabled flight for &e%player%&c.'
+  fly-notify: '&eYour flight was %state% &eby &6%by%&e.'
+
+  # -------- FLYSPEED --------
+  flyspeed-set-self: '&aFly speed set to &e%speed%&a.'
+  flyspeed-set-other: '&aSet fly speed of &e%player% &ato &e%speed%&a.'
+  flyspeed-invalid: '&cSpeed must be between &e1 &cand &e10&c.'
+  flyspeed-notify: '&eYour fly speed was set to &6%speed% &eby &6%by%&e.'
+
+  # -------- VANISH --------
+  vanish-enabled-self: '&aYou are now &lVANISHED&a.'
+  vanish-disabled-self: '&cYou are no longer vanished.'
+  vanish-enabled-other: '&aEnabled vanish for &e%player%&a.'
+  vanish-disabled-other: '&cDisabled vanish for &e%player%&c.'
+  vanish-notify: '&eYour vanish mode was %state% &eby &6%by%&e.'
+
+# ----------------------------------------------------------
+#  Settings
+# ----------------------------------------------------------
+settings:
+  # Allow color codes in /msg if player has minestorm.msg.color
+  allow-msg-colors: true
+  # Enable social spy
+  social-spy-enabled: true
+  # Play a sound when receiving a private message
+  msg-sound: true
+  # Sound name (1.8 compatible)
+  msg-sound-name: 'ORB_PICKUP'
+  # Sound volume & pitch
+  msg-sound-volume: 0.5
+  msg-sound-pitch: 1.5
+  # Vanish settings
+  vanish:
+    # Enable vanish feature
+    enabled: true
+    # Hide vanished players from mobs
+    hide-from-mobs: true
+    # Notify staff with minestorm.vanish.see when a player vanishes
+    notify-staff: true

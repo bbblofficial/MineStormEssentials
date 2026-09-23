@@ -1,0 +1,116 @@
+name: MineStormEssentials
+version: 1.0
+main: org.minestorm.essentials.MineStormEssentials
+author: Muvixo
+description: Lightweight essentials plugin for Minecraft 1.8.8
+api-version: 1.8
+
+commands:
+  gmc:
+    description: Set gamemode to Creative
+    usage: /gmc [player]
+    permission: minestorm.gamemode
+  gms:
+    description: Set gamemode to Survival
+    usage: /gms [player]
+    permission: minestorm.gamemode
+  gmsp:
+    description: Set gamemode to Spectator
+    usage: /gmsp [player]
+    permission: minestorm.gamemode
+  gma:
+    description: Set gamemode to Adventure
+    usage: /gma [player]
+    permission: minestorm.gamemode
+  fly:
+    description: Toggle flight
+    usage: /fly [player]
+    permission: minestorm.fly
+  flyspeed:
+    description: Set fly speed
+    usage: /flyspeed <1-10> [player]
+    permission: minestorm.flyspeed
+    aliases: [ fspeed, fs ]
+  msg:
+    description: Send a private message
+    usage: /msg <player> <message>
+    aliases: [ tell, whisper, w, m, pm ]
+    permission: minestorm.msg
+  reply:
+    description: Reply to last message
+    usage: /reply <message>
+    aliases: [ r ]
+    permission: minestorm.msg
+  vanish:
+    description: Toggle vanish mode
+    usage: /vanish [player]
+    aliases: [ v ]
+    permission: minestorm.vanish
+
+permissions:
+  # ---------- GAMEMODE ----------
+  minestorm.gamemode:
+    description: Allows using /gmc /gms /gmsp /gma on self
+    default: op
+  minestorm.gamemode.others:
+    description: Allows changing other players' gamemode
+    default: op
+
+  # ---------- FLY ----------
+  minestorm.fly:
+    description: Allows toggling flight on self
+    default: op
+  minestorm.fly.others:
+    description: Allows toggling flight for other players
+    default: op
+
+  # ---------- FLYSPEED ----------
+  minestorm.flyspeed:
+    description: Allows setting own fly speed
+    default: op
+  minestorm.flyspeed.others:
+    description: Allows setting fly speed for others
+    default: op
+
+  # ---------- MSG ----------
+  minestorm.msg:
+    description: Allows sending private messages
+    default: true
+  minestorm.msg.color:
+    description: Allows using color codes in messages
+    default: op
+  minestorm.msg.spy:
+    description: Allows receiving social spy messages
+    default: op
+  minestorm.msg.bypass:
+    description: Bypass ignore list (not yet implemented)
+    default: op
+
+  # ---------- VANISH ----------
+  minestorm.vanish:
+    description: Allows toggling vanish on self
+    default: op
+  minestorm.vanish.others:
+    description: Allows toggling vanish for other players
+    default: op
+  minestorm.vanish.see:
+    description: Allows seeing vanished players
+    default: op
+
+  # ---------- WILDCARD ----------
+  minestorm.*:
+    description: Grants all MineStorm permissions
+    default: op
+    children:
+      minestorm.gamemode: true
+      minestorm.gamemode.others: true
+      minestorm.fly: true
+      minestorm.fly.others: true
+      minestorm.flyspeed: true
+      minestorm.flyspeed.others: true
+      minestorm.msg: true
+      minestorm.msg.color: true
+      minestorm.msg.spy: true
+      minestorm.vanish: true
+      minestorm.vanish.others: true
+      minestorm.vanish.see: true
