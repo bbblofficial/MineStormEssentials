@@ -96,11 +96,9 @@ public class VanishCommand implements CommandExecutor, TabCompleter {
         if (state) {
             vanished.add(player.getUniqueId());
 
-            // Set metadata so other listeners can detect vanish state
             player.setMetadata(META_VANISHED,
                     new FixedMetadataValue(plugin, Boolean.TRUE));
 
-            // Hide from players who can't see vanished players
             for (Player online : Bukkit.getOnlinePlayers()) {
                 if (online.equals(player)) continue;
                 if (online.hasPermission("minestorm.vanish.see")) continue;
@@ -111,7 +109,6 @@ public class VanishCommand implements CommandExecutor, TabCompleter {
 
             player.removeMetadata(META_VANISHED, plugin);
 
-            // Show to everyone
             for (Player online : Bukkit.getOnlinePlayers()) {
                 if (online.equals(player)) continue;
                 online.showPlayer(player);
