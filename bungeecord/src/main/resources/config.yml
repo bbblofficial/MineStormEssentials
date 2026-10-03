@@ -1,0 +1,17 @@
+messages:
+  msg-sender: '&7[&6me &7-> &6%receiver%&7] &f%message%'
+  msg-receiver: '&7[&6%sender% &7-> &6me&7] &f%message%'
+  social-spy: '&8[&cSPY&8] &7[&6%sender% &7-> &6%receiver%&7] &f%message%'
+  msg-no-reply: '&cYou have nobody to reply to.'
+  msg-self: '&cYou cannot message yourself.'
+  no-permission: '&cYou do not have permission to do this.'
+  player-not-found: '&cPlayer not found: &e%player%'
+  player-only: '&cOnly players can use this command.'
+  invalid-args: '&cUsage: &e%usage%'
+  spy-enabled: '&aSocial spy &lENABLED&a.'
+  spy-disabled: '&cSocial spy &lDISABLED&c.'
+
+settings:
+  social-spy-enabled: true
+  allow-msg-colors: true
+  forward-server-commands: true

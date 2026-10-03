@@ -1,0 +1,8 @@
+{
+  "id": "minestormessentials",
+  "name": "MineStormEssentials",
+  "version": "1.0",
+  "description": "Proxy-side MineStorm Essentials for Velocity",
+  "authors": ["Muvixo"],
+  "main": "org.minestorm.essentials.velocity.MineStormVelocity"
+}

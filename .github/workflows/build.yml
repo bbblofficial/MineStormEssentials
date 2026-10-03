@@ -1,0 +1,63 @@
+name: Build MineStormEssentials
+
+on:
+  push:
+    branches: [ main, master ]
+    tags: [ 'v*' ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - jdk: 8
+            modules: 'spigot,paper,bungeecord'
+          - jdk: 17
+            modules: 'spigot,paper,bungeecord,velocity'
+          - jdk: 21
+            modules: 'spigot,paper,bungeecord,velocity'
+          - jdk: 25
+            modules: 'spigot,paper,bungeecord,velocity'
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK ${{ matrix.jdk }}
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: ${{ matrix.jdk }}
+          cache: maven
+
+      - name: Build modules [${{ matrix.modules }}] with JDK ${{ matrix.jdk }}
+        run: mvn -B clean package -pl ${{ matrix.modules }} -am -DskipTests
+
+      - name: Upload JARs (JDK ${{ matrix.jdk }})
+        uses: actions/upload-artifact@v4
+        with:
+          name: MineStormEssentials-JDK${{ matrix.jdk }}
+          path: |
+            spigot/target/*.jar
+            paper/target/*.jar
+            bungeecord/target/*.jar
+            velocity/target/*.jar
+          if-no-files-found: warn
+
+      - name: Create Release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            spigot/target/*.jar
+            paper/target/*.jar
+            bungeecord/target/*.jar
+            velocity/target/*.jar
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

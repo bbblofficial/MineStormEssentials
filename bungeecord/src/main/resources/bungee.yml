@@ -1,0 +1,5 @@
+name: MineStormEssentials
+version: 1.0
+main: org.minestorm.essentials.bungee.MineStormBungee
+author: Muvixo
+description: Proxy-side MineStorm Essentials for BungeeCord

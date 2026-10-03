@@ -1,0 +1,42 @@
+# ==========================================================
+#  MineStorm Essentials - Configuration
+# ==========================================================
+messages:
+  msg-sender: '&7[&6me &7-> &6%receiver%&7] &f%message%'
+  msg-receiver: '&7[&6%sender% &7-> &6me&7] &f%message%'
+  social-spy: '&8[&cSPY&8] &7[&6%sender% &7-> &6%receiver%&7] &f%message%'
+  msg-no-reply: '&cYou have nobody to reply to.'
+  msg-self: '&cYou cannot message yourself.'
+  no-permission: '&cYou do not have permission to do this.'
+  player-not-found: '&cPlayer not found: &e%player%'
+  player-only: '&cOnly players can use this command.'
+  invalid-args: '&cUsage: &e%usage%'
+  gamemode-changed-self: '&aYour gamemode has been set to &e%mode%&a.'
+  gamemode-changed-other: '&aSet gamemode of &e%player% &ato &e%mode%&a.'
+  gamemode-notify: '&eYour gamemode was set to &6%mode% &eby &6%by%&e.'
+  fly-enabled-self: '&aFlight &lENABLED&a.'
+  fly-disabled-self: '&cFlight &lDISABLED&c.'
+  fly-enabled-other: '&aEnabled flight for &e%player%&a.'
+  fly-disabled-other: '&cDisabled flight for &e%player%&c.'
+  fly-notify: '&eYour flight was %state% &eby &6%by%&e.'
+  flyspeed-set-self: '&aFly speed set to &e%speed%&a.'
+  flyspeed-set-other: '&aSet fly speed of &e%player% &ato &e%speed%&a.'
+  flyspeed-invalid: '&cSpeed must be between &e1 &cand &e10&c.'
+  flyspeed-notify: '&eYour fly speed was set to &6%speed% &eby &6%by%&e.'
+  vanish-enabled-self: '&aYou are now &lVANISHED&a.'
+  vanish-disabled-self: '&cYou are no longer vanished.'
+  vanish-enabled-other: '&aEnabled vanish for &e%player%&a.'
+  vanish-disabled-other: '&cDisabled vanish for &e%player%&c.'
+  vanish-notify: '&eYour vanish mode was %state% &eby &6%by%&e.'
+
+settings:
+  allow-msg-colors: true
+  social-spy-enabled: true
+  msg-sound: true
+  msg-sound-name: 'ORB_PICKUP'
+  msg-sound-volume: 0.5
+  msg-sound-pitch: 1.5
+  vanish:
+    enabled: true
+    hide-from-mobs: true
+    notify-staff: true
