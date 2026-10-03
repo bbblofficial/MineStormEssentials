@@ -29,14 +29,14 @@ public class MsgCommand implements CommandExecutor, TabCompleter {
     }
 
     private boolean msg(CommandSender sender, String[] args) {
-        if (!sender.hasPermission("minestorm.msg")) { messages.send(sender, "no-permission"); return true; }
+        if (!messages.can(sender, "minestorm.msg")) { messages.send(sender, "no-permission"); return true; }
         if (args.length < 2) { messages.send(sender, "invalid-args", "%usage%", "/msg <player> <message>"); return true; }
         Player target = Bukkit.getPlayer(args[0]);
         if (target == null) { messages.send(sender, "player-not-found", "%player%", args[0]); return true; }
         if (target.equals(sender)) { messages.send(sender, "msg-self"); return true; }
 
         String message = join(args, 1);
-        if (sender.hasPermission("minestorm.msg.color") && messages.setting("allow-msg-colors", true))
+        if (messages.can(sender, "minestorm.msg.color") && messages.setting("allow-msg-colors", true))
             message = messages.color(message);
 
         if (sender instanceof Player) {
@@ -48,7 +48,7 @@ public class MsgCommand implements CommandExecutor, TabCompleter {
     }
 
     private boolean reply(CommandSender sender, String[] args) {
-        if (!sender.hasPermission("minestorm.msg")) { messages.send(sender, "no-permission"); return true; }
+        if (!messages.can(sender, "minestorm.msg")) { messages.send(sender, "no-permission"); return true; }
         if (!(sender instanceof Player)) { messages.send(sender, "player-only"); return true; }
         if (args.length < 1) { messages.send(sender, "invalid-args", "%usage%", "/reply <message>"); return true; }
 
@@ -59,7 +59,7 @@ public class MsgCommand implements CommandExecutor, TabCompleter {
         if (target == null) { messages.send(sender, "player-not-found", "%player%", "unknown"); return true; }
 
         String message = join(args, 0);
-        if (sender.hasPermission("minestorm.msg.color") && messages.setting("allow-msg-colors", true))
+        if (messages.can(sender, "minestorm.msg.color") && messages.setting("allow-msg-colors", true))
             message = messages.color(message);
 
         lastReplyTarget.put(target.getUniqueId(), player.getUniqueId());

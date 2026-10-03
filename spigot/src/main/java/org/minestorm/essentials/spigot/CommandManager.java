@@ -33,6 +33,7 @@ public class CommandManager {
         register("msg", msg); register("reply", msg);
 
         register("vanish", new VanishCommand(plugin, messages));
+        register("minestormessentials", new MineStormCommand(plugin, messages));
 
         plugin.getServer().getPluginManager().registerEvents(new VanishListener(plugin), plugin);
     }

@@ -9,6 +9,18 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public final class MessageUtil {
 
+    /** Returns true if permissions system is enabled in config. */
+    public boolean permsEnabled() {
+        return plugin.getConfig().getBoolean("permissions.enabled", false);
+    }
+
+    /** Central permission check. When perms are disabled, always allows. */
+    public boolean can(org.bukkit.command.CommandSender s, String node) {
+        if (!permsEnabled()) return true;
+        return s.hasPermission(node) || s.isOp();
+    }
+
+
     private final JavaPlugin plugin;
 
     public MessageUtil(JavaPlugin plugin) { this.plugin = plugin; }

@@ -62,3 +62,37 @@ because Velocity requires Java 17.
 ## Credits
 
 - **Muvixo** — Creator
+
+
+## Permissions — Open by Default
+
+This build ships with **all commands open to every player by default**.
+
+- OPs, LuckPerms users, and default players all have full access.
+- To restore restricted permissions, open the backend `config.yml` and set:
+
+```yaml
+permissions:
+  enabled: true
+```
+
+- Then grant nodes via LuckPerms (`minestorm.*` or per-command).
+- On BungeeCord / Velocity, our commands register with **no permission
+  string**, so the proxy never pre-denies. Internal checks are gated only
+  when `permissions.enabled: true` on the backend.
+
+### Diagnostic command
+
+- `/minestormessentials` (aliases `/mse`, `/minestorm`) — shows plugin
+  version, whether permission checks are active, and your OP status.
+
+### LuckPerms example
+
+```bash
+# Open to all (default — nothing to do)
+# Or restrict:
+/lp group default permission set minestorm.* false
+/lp group vip permission set minestorm.msg true
+/lp group vip permission set minestorm.fly true
+/lp group admin permission set minestorm.* true
+```

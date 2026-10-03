@@ -10,13 +10,13 @@ public class MsgCommand extends Command {
 
     private final MineStormBungee plugin;
     public MsgCommand(MineStormBungee plugin) {
-        super("msg", "minestorm.msg", "tell", "whisper", "w", "m", "pm");
+        super("msg", null, "tell", "whisper", "w", "m", "pm");
         this.plugin = plugin;
     }
 
     @Override
     public void execute(CommandSender sender, String[] args) {
-        if (!sender.hasPermission("minestorm.msg")) { plugin.getMessages().send(sender, "no-permission"); return; }
+        if (!plugin.getMessages().can(sender, "minestorm.msg")) { plugin.getMessages().send(sender, "no-permission"); return; }
         if (args.length < 2) { plugin.getMessages().send(sender, "invalid-args", "%usage%", "/msg <player> <message>"); return; }
 
         ProxiedPlayer target = ProxyServer.getInstance().getPlayer(args[0]);
@@ -24,7 +24,7 @@ public class MsgCommand extends Command {
         if (target.equals(sender)) { plugin.getMessages().send(sender, "msg-self"); return; }
 
         String msg = join(args, 1);
-        if (sender.hasPermission("minestorm.msg.color") && plugin.getMessages().setting("allow-msg-colors", true))
+        if (plugin.getMessages().can(sender, "minestorm.msg.color") && plugin.getMessages().setting("allow-msg-colors", true))
             msg = plugin.getMessages().color(msg);
 
         if (sender instanceof ProxiedPlayer)

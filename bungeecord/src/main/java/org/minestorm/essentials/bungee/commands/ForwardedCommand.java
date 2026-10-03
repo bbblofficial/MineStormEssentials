@@ -21,7 +21,7 @@ public class ForwardedCommand extends Command implements TabExecutor {
     private final MineStormBungee plugin;
 
     public ForwardedCommand(MineStormBungee plugin, String name, String... aliases) {
-        super(name, "minestorm." + name, aliases);
+        super(name, null, aliases);
         this.plugin = plugin;
     }
 

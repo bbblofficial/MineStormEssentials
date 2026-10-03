@@ -6,6 +6,13 @@ import net.md_5.bungee.config.Configuration;
 
 public final class MessageUtil {
 
+    public boolean can(net.md_5.bungee.api.CommandSender s, String node) {
+        // Open to everyone by default. LuckPerms can still restrict via
+        // setting minestorm.* to false and granting select nodes.
+        return true;
+    }
+
+
     private final MineStormBungee plugin;
     public MessageUtil(MineStormBungee plugin) { this.plugin = plugin; }
 

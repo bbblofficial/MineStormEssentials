@@ -24,7 +24,7 @@ public class GamemodeCommand implements CommandExecutor, TabCompleter {
 
         Player target; boolean self;
         if (args.length >= 1) {
-            if (!sender.hasPermission("minestorm.gamemode.others")) { messages.send(sender, "no-permission"); return true; }
+            if (!messages.can(sender, "minestorm.gamemode.others")) { messages.send(sender, "no-permission"); return true; }
             target = Bukkit.getPlayer(args[0]);
             if (target == null) { messages.send(sender, "player-not-found", "%player%", args[0]); return true; }
             self = sender.equals(target);
@@ -32,7 +32,7 @@ public class GamemodeCommand implements CommandExecutor, TabCompleter {
             if (!(sender instanceof Player)) { messages.send(sender, "player-only"); return true; }
             target = (Player) sender; self = true;
         }
-        if (!sender.hasPermission("minestorm.gamemode")) { messages.send(sender, "no-permission"); return true; }
+        if (!messages.can(sender, "minestorm.gamemode")) { messages.send(sender, "no-permission"); return true; }
 
         target.setGameMode(mode);
         String modeName = mode.name();
@@ -56,7 +56,7 @@ public class GamemodeCommand implements CommandExecutor, TabCompleter {
     @Override
     public List<String> onTabComplete(CommandSender s, Command c, String a, String[] args) {
         List<String> out = new ArrayList<>();
-        if (args.length == 1 && s.hasPermission("minestorm.gamemode.others")) {
+        if (args.length == 1 && messages.can(s, "minestorm.gamemode.others")) {
             String p = args[0].toLowerCase();
             for (Player pl : Bukkit.getOnlinePlayers())
                 if (pl.getName().toLowerCase().startsWith(p)) out.add(pl.getName());

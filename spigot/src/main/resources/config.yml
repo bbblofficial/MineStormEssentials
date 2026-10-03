@@ -40,3 +40,12 @@ settings:
     enabled: true
     hide-from-mobs: true
     notify-staff: true
+
+# ----------------------------------------------------------
+#  Permissions
+#  If enabled: false, every MineStorm command is usable by
+#  every player regardless of LuckPerms / OP status.
+#  If enabled: true, LuckPerms and OP rules apply normally.
+# ----------------------------------------------------------
+permissions:
+  enabled: false

@@ -11,6 +11,13 @@ import java.util.Map;
 
 public final class MessageUtil {
 
+    public boolean can(com.velocitypowered.api.command.CommandSource s, String node) {
+        // Open to everyone. LuckPerms can still restrict by setting
+        // minestorm.* to false for a group.
+        return true;
+    }
+
+
     private final MineStormVelocity plugin;
     private Map<String, Object> config;
 

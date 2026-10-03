@@ -14,7 +14,7 @@ public class SocialSpyCommand extends Command {
     public static final Set<UUID> SPY = new HashSet<>();
     private final MineStormBungee plugin;
 
-    public SocialSpyCommand(MineStormBungee plugin) { super("socialspy", "minestorm.msg.spy", "spy"); this.plugin = plugin; }
+    public SocialSpyCommand(MineStormBungee plugin) { super("socialspy", null, "spy"); this.plugin = plugin; }
 
     @Override
     public void execute(CommandSender sender, String[] args) {

@@ -6,63 +6,58 @@ description: Lightweight essentials plugin for Minecraft 1.8.8 (Spigot/Paper)
 api-version: 1.8
 
 commands:
+  minestormessentials:
+    description: MineStorm Essentials diagnostic
+    usage: /minestormessentials
+    aliases: [ mse, minestorm ]
   gmc:
     description: Set gamemode to Creative
     usage: /gmc [player]
-    permission: minestorm.gamemode
   gms:
     description: Set gamemode to Survival
     usage: /gms [player]
-    permission: minestorm.gamemode
   gmsp:
     description: Set gamemode to Spectator
     usage: /gmsp [player]
-    permission: minestorm.gamemode
   gma:
     description: Set gamemode to Adventure
     usage: /gma [player]
-    permission: minestorm.gamemode
   fly:
     description: Toggle flight
     usage: /fly [player]
-    permission: minestorm.fly
   flyspeed:
     description: Set fly speed
     usage: /flyspeed <1-10> [player]
-    permission: minestorm.flyspeed
     aliases: [ fspeed, fs ]
   msg:
     description: Send a private message
     usage: /msg <player> <message>
     aliases: [ tell, whisper, w, m, pm ]
-    permission: minestorm.msg
   reply:
     description: Reply to last message
     usage: /reply <message>
     aliases: [ r ]
-    permission: minestorm.msg
   vanish:
     description: Toggle vanish mode
     usage: /vanish [player]
     aliases: [ v ]
-    permission: minestorm.vanish
 
 permissions:
-  minestorm.gamemode: { description: Use gamemode commands on self, default: op }
-  minestorm.gamemode.others: { description: Change others' gamemode, default: op }
-  minestorm.fly: { description: Toggle flight, default: op }
-  minestorm.fly.others: { description: Toggle flight for others, default: op }
-  minestorm.flyspeed: { description: Set own fly speed, default: op }
-  minestorm.flyspeed.others: { description: Set others' fly speed, default: op }
+  minestorm.gamemode: { description: Use gamemode commands on self, default: true }
+  minestorm.gamemode.others: { description: Change others' gamemode, default: true }
+  minestorm.fly: { description: Toggle flight, default: true }
+  minestorm.fly.others: { description: Toggle flight for others, default: true }
+  minestorm.flyspeed: { description: Set own fly speed, default: true }
+  minestorm.flyspeed.others: { description: Set others' fly speed, default: true }
   minestorm.msg: { description: Send private messages, default: true }
-  minestorm.msg.color: { description: Use color codes, default: op }
-  minestorm.msg.spy: { description: Social spy, default: op }
-  minestorm.vanish: { description: Toggle vanish, default: op }
-  minestorm.vanish.others: { description: Vanish others, default: op }
-  minestorm.vanish.see: { description: See vanished players, default: op }
+  minestorm.msg.color: { description: Use color codes, default: true }
+  minestorm.msg.spy: { description: Social spy, default: true }
+  minestorm.vanish: { description: Toggle vanish, default: true }
+  minestorm.vanish.others: { description: Vanish others, default: true }
+  minestorm.vanish.see: { description: See vanished players, default: true }
   minestorm.*:
     description: All permissions
-    default: op
+    default: true
     children:
       minestorm.gamemode: true
       minestorm.gamemode.others: true

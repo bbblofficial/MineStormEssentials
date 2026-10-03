@@ -20,7 +20,7 @@ public class FlyCommand implements CommandExecutor, TabCompleter {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         Player target; boolean self;
         if (args.length >= 1) {
-            if (!sender.hasPermission("minestorm.fly.others")) { messages.send(sender, "no-permission"); return true; }
+            if (!messages.can(sender, "minestorm.fly.others")) { messages.send(sender, "no-permission"); return true; }
             target = Bukkit.getPlayer(args[0]);
             if (target == null) { messages.send(sender, "player-not-found", "%player%", args[0]); return true; }
             self = sender.equals(target);
@@ -28,7 +28,7 @@ public class FlyCommand implements CommandExecutor, TabCompleter {
             if (!(sender instanceof Player)) { messages.send(sender, "player-only"); return true; }
             target = (Player) sender; self = true;
         }
-        if (!sender.hasPermission("minestorm.fly")) { messages.send(sender, "no-permission"); return true; }
+        if (!messages.can(sender, "minestorm.fly")) { messages.send(sender, "no-permission"); return true; }
 
         boolean newState = !target.getAllowFlight();
         target.setAllowFlight(newState);
@@ -46,7 +46,7 @@ public class FlyCommand implements CommandExecutor, TabCompleter {
     @Override
     public List<String> onTabComplete(CommandSender s, Command c, String a, String[] args) {
         List<String> out = new ArrayList<>();
-        if (args.length == 1 && s.hasPermission("minestorm.fly.others")) {
+        if (args.length == 1 && messages.can(s, "minestorm.fly.others")) {
             String p = args[0].toLowerCase();
             for (Player pl : Bukkit.getOnlinePlayers())
                 if (pl.getName().toLowerCase().startsWith(p)) out.add(pl.getName());

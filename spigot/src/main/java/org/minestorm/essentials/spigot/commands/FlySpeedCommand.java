@@ -26,7 +26,7 @@ public class FlySpeedCommand implements CommandExecutor, TabCompleter {
 
         Player target; boolean self;
         if (args.length >= 2) {
-            if (!sender.hasPermission("minestorm.flyspeed.others")) { messages.send(sender, "no-permission"); return true; }
+            if (!messages.can(sender, "minestorm.flyspeed.others")) { messages.send(sender, "no-permission"); return true; }
             target = Bukkit.getPlayer(args[1]);
             if (target == null) { messages.send(sender, "player-not-found", "%player%", args[1]); return true; }
             self = sender.equals(target);
@@ -34,7 +34,7 @@ public class FlySpeedCommand implements CommandExecutor, TabCompleter {
             if (!(sender instanceof Player)) { messages.send(sender, "player-only"); return true; }
             target = (Player) sender; self = true;
         }
-        if (!sender.hasPermission("minestorm.flyspeed")) { messages.send(sender, "no-permission"); return true; }
+        if (!messages.can(sender, "minestorm.flyspeed")) { messages.send(sender, "no-permission"); return true; }
 
         float value = speed / 10.0F;
         if (value > 1.0F) value = 1.0F;
@@ -56,7 +56,7 @@ public class FlySpeedCommand implements CommandExecutor, TabCompleter {
                 String v = String.valueOf(i);
                 if (v.startsWith(args[0])) out.add(v);
             }
-        } else if (args.length == 2 && s.hasPermission("minestorm.flyspeed.others")) {
+        } else if (args.length == 2 && messages.can(s, "minestorm.flyspeed.others")) {
             String p = args[1].toLowerCase();
             for (Player pl : Bukkit.getOnlinePlayers())
                 if (pl.getName().toLowerCase().startsWith(p)) out.add(pl.getName());

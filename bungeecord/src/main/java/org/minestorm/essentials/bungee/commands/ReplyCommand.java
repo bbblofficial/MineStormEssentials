@@ -9,11 +9,11 @@ import org.minestorm.essentials.bungee.MineStormBungee;
 public class ReplyCommand extends Command {
 
     private final MineStormBungee plugin;
-    public ReplyCommand(MineStormBungee plugin) { super("reply", "minestorm.msg", "r"); this.plugin = plugin; }
+    public ReplyCommand(MineStormBungee plugin) { super("reply", null, "r"); this.plugin = plugin; }
 
     @Override
     public void execute(CommandSender sender, String[] args) {
-        if (!sender.hasPermission("minestorm.msg")) { plugin.getMessages().send(sender, "no-permission"); return; }
+        if (!plugin.getMessages().can(sender, "minestorm.msg")) { plugin.getMessages().send(sender, "no-permission"); return; }
         if (!(sender instanceof ProxiedPlayer)) { plugin.getMessages().send(sender, "player-only"); return; }
         if (args.length < 1) { plugin.getMessages().send(sender, "invalid-args", "%usage%", "/reply <message>"); return; }
 
@@ -22,7 +22,7 @@ public class ReplyCommand extends Command {
         if (target == null) { plugin.getMessages().send(sender, "msg-no-reply"); return; }
 
         String msg = MsgCommand.join(args, 0);
-        if (sender.hasPermission("minestorm.msg.color") && plugin.getMessages().setting("allow-msg-colors", true))
+        if (plugin.getMessages().can(sender, "minestorm.msg.color") && plugin.getMessages().setting("allow-msg-colors", true))
             msg = plugin.getMessages().color(msg);
 
         MessageStore.setReplyTarget(player, target);

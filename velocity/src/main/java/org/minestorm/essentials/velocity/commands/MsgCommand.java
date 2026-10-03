@@ -21,7 +21,7 @@ public class MsgCommand implements SimpleCommand {
         var src = inv.source();
         String[] args = inv.arguments();
 
-        if (!src.hasPermission("minestorm.msg")) { plugin.getMessages().send(src, "no-permission"); return; }
+        if (!plugin.getMessages().can(src, "minestorm.msg")) { plugin.getMessages().send(src, "no-permission"); return; }
         if (args.length < 2) { plugin.getMessages().send(src, "invalid-args", "%usage%", "/msg <player> <message>"); return; }
 
         Optional<Player> targetOpt = plugin.getServer().getPlayer(args[0]);
@@ -33,7 +33,7 @@ public class MsgCommand implements SimpleCommand {
         }
 
         String message = join(args, 1);
-        if (src.hasPermission("minestorm.msg.color")
+        if (plugin.getMessages().can(src, "minestorm.msg.color")
                 && plugin.getMessages().setting("allow-msg-colors", true)) {
             message = plugin.getMessages().color(message);
         }

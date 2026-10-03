@@ -17,7 +17,7 @@ public class ReplyCommand implements SimpleCommand {
         var src = inv.source();
         String[] args = inv.arguments();
 
-        if (!src.hasPermission("minestorm.msg")) { plugin.getMessages().send(src, "no-permission"); return; }
+        if (!plugin.getMessages().can(src, "minestorm.msg")) { plugin.getMessages().send(src, "no-permission"); return; }
         if (!(src instanceof Player)) { plugin.getMessages().send(src, "player-only"); return; }
         if (args.length < 1) { plugin.getMessages().send(src, "invalid-args", "%usage%", "/reply <message>"); return; }
 
@@ -30,7 +30,7 @@ public class ReplyCommand implements SimpleCommand {
         Player target = targetOpt.get();
 
         String message = MsgCommand.join(args, 0);
-        if (src.hasPermission("minestorm.msg.color")
+        if (plugin.getMessages().can(src, "minestorm.msg.color")
                 && plugin.getMessages().setting("allow-msg-colors", true)) {
             message = plugin.getMessages().color(message);
         }
