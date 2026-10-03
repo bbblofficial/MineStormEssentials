@@ -15,3 +15,6 @@ settings:
   social-spy-enabled: true
   allow-msg-colors: true
   forward-server-commands: true
+
+permissions:
+  enabled: false
