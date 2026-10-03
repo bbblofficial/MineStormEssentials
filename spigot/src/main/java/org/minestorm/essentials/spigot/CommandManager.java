@@ -7,6 +7,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.minestorm.essentials.spigot.commands.FlyCommand;
 import org.minestorm.essentials.spigot.commands.FlySpeedCommand;
 import org.minestorm.essentials.spigot.commands.GamemodeCommand;
+import org.minestorm.essentials.spigot.commands.MineStormCommand;
 import org.minestorm.essentials.spigot.commands.MsgCommand;
 import org.minestorm.essentials.spigot.commands.VanishCommand;
 import org.minestorm.essentials.spigot.listeners.VanishListener;
